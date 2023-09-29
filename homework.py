@@ -5,19 +5,19 @@ import json
 
 def get_description(url):
     response = requests.get(url)
-
-    soup = BeautifulSoup(response.text, 'html.parser')
+    if response is not None:
+        soup = BeautifulSoup(response.text, 'html.parser')
 
     description = {}
 
     l1 = []
     l2 = []
     for item in soup.find_all("span", class_="adPage__content__features__key"):
-        if (item != None) and (type(item) is not None):
+        if item is not None:
             l1.append(item.text)
 
     for item in soup.find_all("span", class_="adPage__content__features__value"):
-        if (item != None) and (type(item) is not None):
+        if item is not None:
             l2.append(item.text)
 
     for index in range(len(l2)):
@@ -28,8 +28,12 @@ def get_description(url):
         extra.append(index)
     description['Extra_features'] = extra
 
-    car_model = soup.find('h1').text
-    description["description"] = soup.find('div', class_=("adPage__content__description grid_18")).text
+    if soup.find('h1') is not None:
+        car_model = soup.find('h1').text
+
+    des = soup.find('div', class_=("adPage__content__description grid_18"))
+    if des is not None:
+        description["description"] = des.text
     print(description)
     desc = {}
 
